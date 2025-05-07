@@ -39,7 +39,7 @@ public class SmsReceiver extends BroadcastReceiver {
                         i.putExtra("latitude", latitude);
                         i.putExtra("longitude", longitude);
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
+                        context.startActivity(i);
                     }
                 }
             }

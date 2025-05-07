@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
         // OSMDroid configuration
         Context ctx = getApplicationContext();
+        Configuration.getInstance().setOsmdroidBasePath(ctx.getFilesDir());
+        Configuration.getInstance().setOsmdroidTileCache(ctx.getCacheDir());
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
         EdgeToEdge.enable(this);
@@ -62,7 +64,9 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("CLICK", "Send button is clicked");
                 sendSms(keyword.getText().toString());
+                keyword.setText("");
             }
         });
 
@@ -70,13 +74,12 @@ public class MainActivity extends AppCompatActivity {
         // Request permissions
         requestPermissionsIfNecessary(new String[]{
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
 
         // Initialize the map
         mapView = findViewById(R.id.mapView);
-        mapView.setTileSource(TileSourceFactory.MAPNIK); // Use the default map style
-        mapView.setMultiTouchControls(true); // Enable pinch to zoom
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
+        mapView.setMultiTouchControls(true);
         // Set initial map position and zoom level
         mapView.getController().setZoom(20.0);
         GeoPoint startPoint = new GeoPoint(10.297111026064464, 123.89681419994184); // New York City (example)
@@ -89,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Example: Add a marker
-        addMarker(startPoint, "New York City", "This is an example marker");
+        addMarker(startPoint, "UC MAIN", "This is an example marker");
 
         Intent intent =getIntent();
         String latitudeStr = intent.getStringExtra("latitude");
@@ -114,14 +117,14 @@ public class MainActivity extends AppCompatActivity {
 
     // Method to add a marker to the map
     private void addMarker(GeoPoint point, String title, String snippet) {
-        mapView.getOverlays().removeIf(overlay -> overlay instanceof Marker);
+        mapView.getOverlays().removeIf(overlay -> overlay instanceof Marker); //Removes previous marker
         Marker marker = new Marker(mapView);
         marker.setPosition(point);
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         marker.setTitle(title);
         marker.setSnippet(snippet);
         mapView.getOverlays().add(marker);
-        mapView.invalidate();
+        mapView.invalidate(); //Refreshes markers
     }
 
     @Override
@@ -174,6 +177,8 @@ public class MainActivity extends AppCompatActivity {
     public void sendSms(String message){
 
         SmsManager sender =SmsManager.getDefault();
-        sender.sendTextMessage("+639981553123", null,message ,null,null);
+        Log.d("SEND", "Trying to send message");
+        //Change this number to your receiver
+        sender.sendTextMessage("+639055114206", null,message ,null,null);
     }
 }
